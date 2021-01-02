@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+  <meta charset="utf-8"> 
+	<link rel="stylesheet" href="/static/webix/codebase/skins/mini.css" type="text/css" media="screen" charset="utf-8">
+  <style>@font-face{font-family: 'sncm';src: url(/static/sncm.woff) format('woff');}
+    body, table, div, p, h1, h2, h3, h4, h5, h6, pre {font-family:'sncm';}</style>    
+  
+  <script src="/static/webix/codebase/webix.js" type="text/javascript" charset="utf-8"></script>	
+  <script src="/static/webix_ckeditor4.js" type="text/javascript" charset="utf-8"></script>
+
+  <script src="/view/common.js" type="text/javascript"  charset="utf-8"></script>
+  <script src="/view/mdan_10_ar.js" type="text/javascript"  charset="utf-8"></script>
+
+		<title>mview</title>		
+	</head>
+<body>
+<style>
+  .toolbar_font {
+      font-size: 12px;
+  }
+  </style>  
+  		
+<script type="text/javascript" charset="utf-8">
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+var window_input = 
+{ view:"window",	id:"window_input", headHeight:0, fullscreen:true, body:
+  {
+    rows:
+    [
+      {
+        cols:[
+          { 
+            view:"richselect", id:'input_combobox_group', width:200, labelWidth:50, label:"분류", labelAlign:"right", value:"01",
+            suggest: 
+            { 
+                body:
+                {
+                    yCount:20,
+                    url:"/common_get/get_dan_group"
+                }
+            }
+          },  
+          {view:"button", align:"left", label: '저장', autowidth:true, click:"save_dan"},
+          {},
+          {view:"text", id: "input_text_dan_num", width:"60"},          
+        ]
+      }, 
+      {view:"text", id: "input_text_title", label:"제목", labelWidth:50, labelAlign:"right"},
+      { view:"textarea", height:50, id:"input_text_point"},
+      { view:"ckeditor", id:"input_text_content"},
+      { view:"textarea", height:100, id:"input_text_history"},
+
+      { view:"toolbar", elements:
+        [
+          {view:"button", align:"left", label: '삭제', autowidth:true, click:"del_dan"},
+          {},
+          {view:"button", align:"left", label: '임시', autowidth:true, click:"read_mdan_imsi();"},
+          {},
+          {view:"button", align:"left", label: '닫기', autowidth:true, click:"close_window_input();"},
+        ]
+      },
+    ]
+  }
+};
+
+var window_config = 
+{ view:"window",	id:"window_config", headHeight:0, fullscreen:true, body:
+  {
+    cols:
+    [
+      {
+        rows:
+        [
+          {width:500, height:20},
+          { 
+            view:"richselect", id:'config_combobox_group', width:300, labelWidth:70, label:"기본분류", labelAlign:"right",
+            suggest: 
+            { 
+                body:
+                {
+                    yCount:20,
+                    url:"/common_get/get_dan_group"
+                }
+            }
+          },
+          { 
+            view:"richselect", id:'config_combobox_display', width:300, labelWidth:70, label:"출력", labelAlign:"right",
+            suggest: 
+            { 
+                body:
+                {
+                    yCount:20,
+                    url:"/common_get/get_dan_display"
+                }
+            }
+          },  
+          {view:"text", id: "config_text_div_num", label:"분할", labelWidth:70, labelAlign:"right", width:120},
+          {view:"text", id: "config_text_page_num", label:"페이지당", labelWidth:70, labelAlign:"right", width:120},
+          {width:500, height:20},
+          // { view:"datatable", id:"grid_1", resizeColumn:true, autoConfig:true, height:300},
+          {
+            cols:
+            [
+              {width:20},
+              {view:"button", align:"left", label: '저장', autowidth:true, click:"save_config"},                
+              {view:"button", align:"left", label: '닫기', autowidth:true, click:"$$('window_config').hide();"},                
+              {},
+            ]
+          },
+          {}
+        ]
+      }
+    ]
+  }
+};
+
+var window_view = 
+{ view:"window",	id:"window_view", headHeight:0, fullscreen:true, body:
+  {
+    rows:
+    [
+      {
+          view:"scrollview", id:"scrollview_2", borderless:true, scroll:"y", body:
+          {
+              type:"space",
+              id:"mdan_board_view", rows:
+              [
+                  {id:"mdan_content_view"}
+              ]
+          }
+      },
+      {
+        cols:
+        [
+          {},
+          {view:"button", align:"left", label: '닫기', autowidth:true, click:"$$('window_view').hide();"},
+        ]
+      },
+    ]
+  }
+};
+
+
+webix.ready(function()
+{  
+  webix.ui(window_input);
+  webix.ui(window_config);
+  webix.ui(window_view);
+  
+  var main_view =
+  {
+    cols:
+		[
+      {
+        rows:
+        [
+          {
+              view:"scrollview", id:"scrollview_1", borderless:true, scroll:"y", body:
+              {
+                  type:"space",
+                  id:"mdan_board", rows:
+                  [
+                      {id:"mdan_content"}
+                  ]
+              }
+          },
+          { view:"toolbar", elements:
+            [
+            {view:"button", align:"left", label: 'new', click:"show_window_input", width:42},
+            {view:"button", align:"left", label: 'cfg', click:"show_window_config", width:42},
+                { 
+                  view:"richselect", id:'main_combobox_group', width:102,
+                  suggest: 
+                  { 
+                      body:
+                      {
+                          yCount:20,
+                          url:"/common_get/get_dan_group"
+                      }
+                  }
+                },                  
+                {},
+                {view:"button", align:"left", label: '<<', click:"go_first", width:28},
+                {view:"button", align:"left", label: 'pre', click:"go_pre", width:42},
+                {view:"button", align:"left", label: 'next', click:"go_next", width:42},
+                {view:"button", align:"left", label: '>>', click:"go_last", width:28},
+            ]
+          },
+        ]
+      }
+    ]
+  };
+
+  webix.ui(main_view);
+  webix.Touch.limit(true); 
+
+  $$("main_combobox_group").attachEvent("onChange", function(newv, oldv){
+    read_mdan_main("change_combobox");
+  });  
+
+  start_page();
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+</script>
+
+<form name="f">
+    <input type="hidden" name="select_id">
+</form>
+  
+</body>
+</html>
+

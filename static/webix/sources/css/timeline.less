@@ -1,0 +1,32 @@
+.webix_timeline .webix_scroll_cont{
+	padding-top:28px;
+}
+.webix_timeline_item{
+	height:@timelineItemHeight;
+	padding:0 @dataPadding;
+	position:relative;
+	.webix_timeline_date, .webix_timeline_event{
+		overflow:hidden;
+		position:absolute;
+		top:0px;
+	}
+}
+.webix_timeline_left .webix_timeline_date,
+.webix_timeline_right .webix_timeline_details,
+.webix_timeline_right .webix_timeline_value{
+	text-align: right;
+}
+.webix_timeline_value{
+	font-weight: @boldStyle;
+	line-height:18px;
+}
+.webix_timeline_details{
+	color:@inactiveFontColor;
+	padding-top:2px;
+}
+.webix_timeline_date{
+	white-space: nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	line-height:18px;
+}
