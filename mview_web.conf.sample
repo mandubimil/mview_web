@@ -1,0 +1,7 @@
+{
+    "db_ip_postgres":"192.168.0.100",
+    "db_name_postgres":"mmcp_database",
+    "db_id_postgres":"mmcp_user",
+    "db_passwd_postgres":"mmcp_password",
+    "service_ip_port":"192.168.0.100:1000"
+}

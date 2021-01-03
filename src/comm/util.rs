@@ -11,21 +11,21 @@ use json::JsonValue;
 
 
 pub fn get_config_file() -> Result<JsonValue, Error>{
-    let file = File::open("mview_web.conf").unwrap();
+    let file = File::open("../mview_web.conf").unwrap();
     let mut buf_reader = BufReader::new(file);
     let mut contents = String::new();
     buf_reader.read_to_string(&mut contents).unwrap();
 
     let result = json::parse(&contents).unwrap();
 
-    return Ok(result);    
+    return Ok(result);
 }
 
 pub fn get_service_ip_port() -> Result<String, Error>{
     let injson: JsonValue = get_config_file().unwrap();
     let service_ip_port = injson["service_ip_port"].as_str().unwrap();
 
-    return Ok(service_ip_port.to_string());    
+    return Ok(service_ip_port.to_string());
 }
 
 pub fn body_to_hash(
@@ -62,8 +62,8 @@ pub fn check_session(session: &Session) -> Result<bool, Error> {
         log(30, &format!("세션 확인 : {}", check_login));
 
         // session.set("check_login", "ok_check")?;
-        // session.set("user_id", "mandu".to_string())?;    
-        // return Ok(true);        
+        // session.set("user_id", "mandu".to_string())?;
+        // return Ok(true);
 
         if check_login == "ok_check" {
             return Ok(true);
